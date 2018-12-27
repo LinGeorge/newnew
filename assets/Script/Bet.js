@@ -11,6 +11,10 @@
 cc.Class({
     extends: cc.Component,
 
+    ctor:function(){ // 要讓他能.active，驗先用constructor(reference by playerInfo)
+        this.button = null;
+    },
+
     properties: {
         // foo: {
         //     // ATTRIBUTES:
@@ -31,11 +35,38 @@ cc.Class({
 
     // LIFE-CYCLE CALLBACKS:
 
-    // onLoad () {},
+    onLoad () {
+        this.button = cc.find("button", this.node);
+    },
 
     start () {
 
     },
 
+    threeButtonClick(){
+        global.socket.emit("betButton", global.uid, 1);
+        this.button.active = false;
+        //global.EventListener.fire("dealerButton", 0);
+    },
+    sixButtonClick(){
+        global.socket.emit("betButton", global.uid, 2);
+        this.button.active = false;
+        //global.EventListener.fire("dealerButton", 1);
+    },
+    nineButtonClick(){
+        global.socket.emit("betButton", global.uid, 3);
+        this.button.active = false;
+        //global.EventListener.fire("dealerButton", 2);
+    },
+    twelveButtonClick(){
+        global.socket.emit("betButton", global.uid, 4);
+        this.button.active = false;
+        //global.EventListener.fire("dealerButton", 3);
+    },
+    fifteenButtonClick(){
+        global.socket.emit("betButton", global.uid, 5);
+        this.button.active = false;
+        //global.EventListener.fire("dealerButton", 3);
+    },
     // update (dt) {},
 });

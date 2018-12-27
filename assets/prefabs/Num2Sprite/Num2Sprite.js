@@ -5,6 +5,7 @@ cc.Class({
     extends: cc.Component,
 
     ctor: function () {
+        this.Num = 0;
     },
 
     properties: {
@@ -68,5 +69,12 @@ cc.Class({
             }
 
         });
+
+        self.Num = num;
+    },
+    getNum: function(){
+        var self = this;
+        return self.Num;
     }
+
 });

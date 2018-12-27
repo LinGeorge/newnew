@@ -13,5 +13,4 @@ config.ghostCardType = {
 };
 // 牛牛不用大王小王
 
-
 module.exports = config;

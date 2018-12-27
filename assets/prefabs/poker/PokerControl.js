@@ -33,7 +33,7 @@ cc.Class({
             type: cc.Sprite
         },
 
-        pokerType2: {// 卡片中間的圖案 或是 金卡背
+        pokerType2: {// 卡片中間的圖案 或是 金卡背 或是 狀態底框
             default: null,
             type: cc.Sprite
         },
@@ -232,10 +232,51 @@ cc.Class({
         self.pokerTxt.enabled = false;
         self.pokerTxt1.enabled = false;
 
-        cc.loader.loadRes("status/" + status, cc.SpriteFrame, function (err, spriteFrame) {
+        cc.loader.loadRes("newnew/text/" + status, cc.SpriteFrame, function (err, spriteFrame) {
             self.status.getComponent(cc.Sprite).spriteFrame = spriteFrame;
 
         })
+    },
+    showcardtype: function(status, frame){
+        var self = this;
+        self.CardInfo.data = status;
+        self.CardInfo.canselect = false;
+        self.pokerType.enabled = false;
+        self.pokerType_1.enabled = false;
+        self.pokerType2.enabled = true;
+        self.pokerBackGround.enabled = false;
+        self.pokerTxt.enabled = false;
+        self.pokerTxt1.enabled = false;
+
+        cc.loader.loadRes("newnew/Prize/Award_text_" + status, cc.SpriteFrame, function (err, spriteFrame) {
+            self.status.getComponent(cc.Sprite).spriteFrame = spriteFrame;
+
+        });
+        cc.loader.loadRes("newnew/Prize/Award_frame_0" + frame, cc.SpriteFrame, function (err, spriteFrame) {
+            self.pokerType2.getComponent(cc.Sprite).spriteFrame = spriteFrame;
+
+        });
+    },
+    showresult: function(status){
+        var self = this;
+        self.CardInfo.data = status;
+        self.CardInfo.canselect = false;
+        self.pokerType.enabled = false;
+        self.pokerType_1.enabled = false;
+        self.pokerType2.enabled = true; // award frame
+        self.pokerBackGround.enabled = false;
+        self.pokerTxt.enabled = false;
+        self.pokerTxt1.enabled = false;
+
+        cc.loader.loadRes("newnew/Prize/Award_frame_" + status, cc.SpriteFrame, function (err, spriteFrame) {
+            self.pokerType2.getComponent(cc.Sprite).spriteFrame = spriteFrame;
+
+        });
+        cc.loader.loadRes("newnew/Prize/Award_text_" + status, cc.SpriteFrame, function (err, spriteFrame) {
+            self.status.getComponent(cc.Sprite).spriteFrame = spriteFrame;
+
+        });
+
     },
     onLoad: function () {
 
@@ -255,6 +296,30 @@ cc.Class({
         });
 
         this.pokerBackGround.node.on('touchstart', function (event) {
+
+            if (self.CardInfo.selected == false) {
+                self.select();
+            }
+            else {
+                self.unselect();
+            }
+        });
+
+        this.pokerBackGround.node.on('mousedown', function (event) {
+
+            //if (event.getButton() == null) return;
+
+            if (self.CardInfo.selected == false) {
+                self.select();
+            }
+            else {
+                self.unselect();
+            }
+        });
+
+        this.pokerType2.node.on('mousedown', function (event) {
+
+            //if (event.getButton() == null) return;
 
             if (self.CardInfo.selected == false) {
                 self.select();

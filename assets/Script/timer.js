@@ -1,4 +1,5 @@
 //const alarm = 5;//剩N張牌時想警鈴
+// 掌管倒數鬧鐘的時間和階段的切換
 cc.Class({
     extends: cc.Component,
 
@@ -6,6 +7,11 @@ cc.Class({
     ctor: function () {
         this.Obj = {
             clock: null,
+            timer: null,
+            countdownSecond: 0,
+            stage: 0,
+            time: null,
+            time2: null
             /*Me: null,
             Pre: null,
             Next: null,*/
@@ -37,8 +43,11 @@ cc.Class({
 
     init() {
 
+        var self = this;
         this.Obj = {
             clock:cc.find("Clock", this.node),
+            time:cc.find("Clock/time", this.node),
+            time2:cc.find("Clock/time2", this.node)
             /*Me: cc.find("Me", this.node),
             Pre: cc.find("Pre", this.node),
             Next: cc.find("Next", this.node),*/
@@ -48,13 +57,26 @@ cc.Class({
                 Pre: cc.find("warning/Pre", this.node),
                 Next: cc.find("warning/Next", this.node),
             }*/
-        }
+        };
+
+
+        /*let obj = this.Obj;
+            obj.timer = setInterval(function(){
+            if(obj.countdownSecond !== 0){
+                obj.countdownSecond-=1;
+            }
+            let Info = {
+                countdownSecond: obj.countdownSecond,
+            };
+            self.UpdateTimer(Info);
+
+        }, 1000);*/
 
     },
     start() { // 進入點
         var self = this;
 
-        this.init(); // 找位置
+        this.init(); // 找clock位置
 
         global.socket.on("timer", function (Info) {
             //將計數器更新
@@ -83,10 +105,10 @@ cc.Class({
 
     },
 
-    //更新倒數計時鬧鐘
+    //更新倒數計時鬧鐘(當從SERVER傳來時)
     UpdateCounter(timerInfo) {
-
-        this.Reset();// 讓時鐘消失，回到階段0
+        var self = this;
+        this.Reset();// 先讓時鐘消失，回到階段0
 
         this.activeButton(timerInfo.active);// timerInfo是server傳來的資料，包含在哪一個階段
 
@@ -97,19 +119,29 @@ cc.Class({
         else
         if (timerInfo.whosTurn != null) {
             this.Obj.clock.active = true; // 啟動時鐘
-            //this.Obj.clock.position = this.Obj[timerInfo.whosTurn].position; // 把時鐘拉到"Me"/"pre"/"next"其中一個位置
-            //this.Obj.clock.position = this.obj["Middle"].position;
-            this.Obj.clock.getComponent("clock").settime(timerInfo.countdownSecond); // 寫上剩餘時間
+            this.Obj.clock.getComponent("clock").settime(timerInfo.countdownSecond, self); // 寫上剩餘時間
             if (timerInfo.countdownSecond < 10) // 如果剩餘時間小於10，撥放動畫
                 this.Obj.clock.getComponent(cc.Animation).play();
-
-            /*if (global.EventListener.fire("GetCardsInfo", timerInfo.whosTurn) < alarm) {
-                this.Obj.warning[timerInfo.whosTurn].active = true;
-                this.Obj.warning[timerInfo.whosTurn].getComponent(cc.Animation).play();
-            }*/ // 牛牛不需要warning
         }
 
+        /*this.Obj.countdownSecond = timerInfo.countdownSecond;
+        clearInterval(this.Obj.timer);
+        this.Obj.timer = null;
+        this.Obj.timer = setInterval(function(){
+            if(this.Obj.countdownSecond !== 0){
+                this.Obj.countdownSecond-=1;
+            }
+            let Info = {
+                countdownSecond: this.Obj.countdownSecond,
+            };
+            self.UpdateTimer(Info);
 
+        }, 1000);*/
+    },
+
+    UpdateTimer(timerInfo){
+        var self = this;
+        this.Obj.clock.getComponent("clock").settime(timerInfo.countdownSecond, self); // 寫上剩餘時間
     },
 
     //結束我的回合(出牌)
